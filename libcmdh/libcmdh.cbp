@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libcmdh" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="rls_win32">
+				<Option platforms="Windows;" />
+				<Option output="libcmdh" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="msvc8" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/w" />
+					<Add option="/DWIN32" />
+					<Add option="/D_CRT_SECURE_NO_DEPRECATE" />
+					<Add directory="..\libcmdh" />
+				</Compiler>
+			</Target>
+			<Target title="rls_linux">
+				<Option platforms="Unix;" />
+				<Option output="libcmdh" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add directory="..\libcmdh" />
+				</Compiler>
+			</Target>
+			<Target title="rls_macosx">
+				<Option platforms="Mac;" />
+				<Option output="libcmdh" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add directory="..\libcmdh" />
+				</Compiler>
+			</Target>
+			<Target title="dbg_win32">
+				<Option platforms="Windows;" />
+				<Option output="libcmdh" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="msvc8" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/w" />
+					<Add option="/Zi /D_DEBUG" />
+					<Add option="/DWIN32" />
+					<Add option="/D_CRT_SECURE_NO_DEPRECATE" />
+				</Compiler>
+				<Linker>
+					<Add option="/DEBUG" />
+				</Linker>
+			</Target>
+			<Target title="dbg_linux">
+				<Option platforms="Unix;" />
+				<Option output="libcmdh" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+			</Target>
+			<Target title="dbg_macosx">
+				<Option platforms="Unix;" />
+				<Option output="libcmdh" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+			</Target>
+		</Build>
+		<Unit filename="libcmdh.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libcmdh\libcmdh.h">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

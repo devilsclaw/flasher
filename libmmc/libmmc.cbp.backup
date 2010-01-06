@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libmmc" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="rls_win32">
+				<Option platforms="Windows;" />
+				<Option output="libmmc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="msvc8" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/w" />
+					<Add option="/DWIN32" />
+				</Compiler>
+			</Target>
+			<Target title="rls_linux">
+				<Option platforms="Unix;" />
+				<Option output="libmmc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-DLINUX" />
+					<Add directory="../libmmc" />
+				</Compiler>
+			</Target>
+			<Target title="rls_macosx">
+				<Option platforms="Mac;" />
+				<Option output="libmmc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-x c -arch i386 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" />
+				</Compiler>
+				<Linker>
+					<Add option="-framework IOKit -framework CoreServices" />
+				</Linker>
+			</Target>
+			<Target title="dbg_win32">
+				<Option platforms="Windows;" />
+				<Option output="libmmc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="msvc8" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="/w" />
+					<Add option="/Zi /D_DEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="/DEBUG" />
+				</Linker>
+			</Target>
+			<Target title="dbg_linux">
+				<Option platforms="Unix;" />
+				<Option output="libmmc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+			</Target>
+			<Target title="dbg_macosx">
+				<Option platforms="Mac;" />
+				<Option output="libmmc" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-x c -arch i386 -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" />
+				</Compiler>
+				<Linker>
+					<Add option="-framework IOKit -framework CoreServices" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="../libmmc" />
+		</Compiler>
+		<Linker>
+			<Add directory="../libmmc" />
+		</Linker>
+		<Unit filename="all.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="libmmc/libmmc.h" />
+		<Unit filename="linux.c">
+			<Option compilerVar="CC" />
+			<Option target="rls_win32" />
+			<Option target="rls_linux" />
+			<Option target="dbg_win32" />
+			<Option target="dbg_linux" />
+		</Unit>
+		<Unit filename="macosx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="win32.c">
+			<Option compilerVar="CC" />
+			<Option target="rls_win32" />
+			<Option target="rls_linux" />
+			<Option target="dbg_win32" />
+			<Option target="dbg_linux" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="libcgtk.c" open="0" top="0" tabpos="0">
+		<Cursor position="2921" topLine="37" />
+	</File>
+	<File name="libcgtk\libcgtk.h" open="0" top="0" tabpos="0">
+		<Cursor position="124" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>

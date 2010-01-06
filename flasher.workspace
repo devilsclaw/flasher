@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="flasher">
+		<Project filename="libmmc\libmmc.cbp" active="1" />
+		<Project filename="flasher\flasher.cbp">
+			<Depends filename="libmmc\libmmc.cbp" />
+			<Depends filename="libcmdh\libcmdh.cbp" />
+		</Project>
+		<Project filename="demo\demo.cbp">
+			<Depends filename="libmmc\libmmc.cbp" />
+		</Project>
+		<Project filename="libcmdh\libcmdh.cbp" />
+		<Project filename="libcgtk\libcgtk.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
