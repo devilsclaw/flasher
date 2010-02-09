@@ -1,0 +1,22 @@
+IF(APPLE)
+   #SET(GUI_TYPE MACOSX_BUNDLE)
+   INCLUDE_DIRECTORIES ( /Developer/SDKs/MacOSX10.4u.sdk )
+   FIND_LIBRARY(CORESERVICES_LIBRARY CoreServices)
+   FIND_LIBRARY(IOKIT_LIBRARY IOKit )
+   MARK_AS_ADVANCED (CORESERVICES_LIBRARY
+                     IOKIT_LIBRARY)
+   SET(EXTRA_LIBS ${CORESERVICES_LIBRARY} ${IOKIT_LIBRARY})
+   add_definitions(-DMACOSX)
+ENDIF (APPLE)
+
+add_executable (
+   dcdate
+   ${PROJECT_SOURCE_DIR}/dcdate/dcdate.c 
+)
+
+ADD_CUSTOM_COMMAND(
+   TARGET dcdate
+   POST_BUILD
+   COMMAND dcdate ${PROJECT_BINARY_DIR}/flasher/version.h
+)
+
