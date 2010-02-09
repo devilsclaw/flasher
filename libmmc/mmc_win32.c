@@ -5,37 +5,33 @@
 
 //execute the edb mmc command for windows
 int drive_command(int drive,mmcdata_s* d,int direction){
-  int ret = 1;
-  DWORD ret_bytes;
-  char sptd_size;
+  int    ret = 1;
+  DWORD  ret_bytes;
+  DWORD  sptd_size;
   SCSI_PASS_THROUGH_DIRECT* sptd;
-  int count;
 
-   //windows is weird it decides to add the sense data to the
-   //end of the common structure sent to device io so we calc
-   //the size of the struct and then add on the size of the
-   //sense date, then we allocate space for it
+  //windows is weird it decides to add the sense data to the
+  //end of the common structure sent to device io so we calc
+  //the size of the struct and then add on the size of the
+  //sense date, then we allocate space for it
   sptd_size = sizeof(SCSI_PASS_THROUGH_DIRECT) + sizeof(d->sensedata);
   sptd      = (SCSI_PASS_THROUGH_DIRECT*)malloc(sptd_size);
 
   memset(sptd,0,sptd_size); //clean it up so we dont have to set everything
-   //some values can stay 0
+                            //some values can stay 0
 
   sptd->DataBuffer = d->data;             //points to the buffer where date will be received
-  sptd->DataTransferLength = d->datasize; //let windows know the size of the buffer
+  sptd->DataTransferLength = (ULONG)d->datasize; //let windows know the size of the buffer
   sptd->DataIn = direction;               //direction as in reading or writing date to the device
   memcpy(sptd->Cdb,d->cmd,d->cmdsize);    //copy the mmc command into the struct
-  sptd->CdbLength = d->cmdsize;           //tell windows the size of the command.. max is 16
+  sptd->CdbLength = (UCHAR)d->cmdsize;    //tell windows the size of the command.. max is 16
   sptd->SenseInfoOffset = sizeof(SCSI_PASS_THROUGH_DIRECT); //sense offest is based off the start of the struct
-   //not real memory offset
+                                                            //not real memory offset
 
   sptd->SenseInfoLength = sizeof(d->sensedata);    //size of the sense date
   sptd->Length = sizeof(SCSI_PASS_THROUGH_DIRECT); //the size of the struct in general
   sptd->TimeOutValue = 1800; //how long to wait until we consider it a failed event in seconds
 
-  //printf("CDB:\n");
-  //printd(d->cmd,0,0,d->cmdsize);
-   //send the data to the device
   if(!DeviceIoControl((HANDLE)drive,IOCTL_SCSI_PASS_THROUGH_DIRECT,sptd,sptd_size,sptd,sptd_size,&ret_bytes,NULL)){
     ret = 0; //device io passed
   }
@@ -59,36 +55,40 @@ int drive_open(int device){
   char drive_name[256] = "\\\\.\\%c:";
   char drive_name2[256];
   size_t count,dcount;
-  int    fd = 0;
+  HANDLE fd = 0;
 
   memset(drives,0,sizeof(drives));
+  
   dcount = 0;
   GetLogicalDriveStrings(sizeof(drives),drives);
   for(count = 0;count < sizeof(drives);){
     if(!drives[count]){
       return 0;
     }
+    
     tdrive = tolower(drives[count]);
     memset(drive_name2,0,sizeof(drive_name2));
     sprintf(drive_name2,drive_name,tdrive);
-    if((fd = (int)CreateFile(drive_name2,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
+    
+    if((fd = CreateFile(drive_name2,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
         0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0)) == INVALID_HANDLE_VALUE){
           printf("drive_open: Cannot open device %c.\n",tdrive);
-        }
-        if(fd != INVALID_HANDLE_VALUE && drive_type(fd) == T_CDROM){
-          ++dcount;
-          if(dcount == device){
-            break;
-          }
-        }
+    }
+    
+    if(fd != INVALID_HANDLE_VALUE && drive_type((int)fd) == T_CDROM){
+      ++dcount;
+      if(dcount == device){
+        break;
+      }
+    }
 
-        if(fd!= INVALID_HANDLE_VALUE  && !drive_close(fd)){
-          return 0;
-        }
+    if(fd!= INVALID_HANDLE_VALUE  && !drive_close((int)fd)){
+      return 0;
+    }
 
-        count += strlen(&drives[count]) + 1;
+    count += strlen(&drives[count]) + 1;
   }
-  return fd;
+  return (int)fd;
 }
 
 char drive_close(int device){
@@ -104,7 +104,7 @@ drives_s* drives_available(){
   char drive_name[256] = "\\\\.\\%c:";
   char drive_name2[256];
   size_t count,dcount;
-  int    device;
+  HANDLE  device;
   drive_s* d = 0;
   drives_s* dd = 0;
 
@@ -119,20 +119,20 @@ drives_s* drives_available(){
     memset(drive_name2,0,sizeof(drive_name2));
     tdrive = tolower(drives[count]);
     sprintf(drive_name2,drive_name,tdrive);
-    if((device = (int)CreateFile(drive_name2,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
+    if((device = CreateFile(drive_name2,GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,
         0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0)) == INVALID_HANDLE_VALUE){
           printf("drives_available: Cannot open device %c.\n",tdrive);
         }
-        if(device != INVALID_HANDLE_VALUE && drive_type(device) == T_CDROM){
+        if(device != INVALID_HANDLE_VALUE && drive_type((int)device) == T_CDROM){
           inquiry_s* inq;
           ++dcount;
           d = (drive_s*)realloc(d,dcount*sizeof(drive_s));
-          inq = drive_inquiry(device);
+          inq = drive_inquiry((int)device);
           memcpy(&d[dcount-1].name,inq->p_id,sizeof(inq->p_id));
           d[dcount-1].id = dcount;
           free(inq);
         }
-        if(device != INVALID_HANDLE_VALUE  && !drive_close(device)){
+        if(device != INVALID_HANDLE_VALUE  && !drive_close((int)device)){
           return 0;
         }
         count += strlen(&drives[count]) + 1;

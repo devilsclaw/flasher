@@ -22,7 +22,7 @@ inquiry_s* drive_inquiry(int device){
     ret = 0;
   } else {
     data_l.cmd[0] = 0x12;
-    data_l.cmd[4] = data_l.datasize;
+    data_l.cmd[4] = (char)data_l.datasize;
     if(!drive_command(device,&data_l,MMC_READ)){
       printf("drive_inquiry: failed to inquiry drive info\n");
       ret = 0;

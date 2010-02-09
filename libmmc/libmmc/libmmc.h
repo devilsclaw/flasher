@@ -1,5 +1,6 @@
 #ifndef BASE_MMC_H
 #define BASE_MMC_H
+
 #ifdef WIN32
 #include <windows.h>
 #include <ntddscsi.h>
@@ -70,21 +71,21 @@ typedef struct senret{
 }senret;
 
 typedef struct mmcdata_s{
-  char  cmd[16];
-  int   cmdsize;
-  char* data;
-  int   datasize;
-  char  sensedata[24];
+  char   cmd[16];
+  size_t cmdsize;
+  char*  data;
+  size_t datasize;
+  char   sensedata[24];
   senret senseret;
 }mmcdata_s;
 
 typedef struct drive_s{
   char name[17];
-  int  id;
+  size_t id;
 }drive_s;
 
 typedef struct drives_s{
-  int number;
+  size_t number;
   drive_s* drives;
 }drives_s;
 

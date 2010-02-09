@@ -105,6 +105,7 @@ char* GetNextFile()
   else return 0; //if curntparams is not smaller return 0
 }
 
+//typedef int(__cdecl *CCMD)(); //Works in windows only
 typedef int(*CCMD)(void * Input);  //works in both windows and linux.. this is used so we can call on the needed function
 //runs a command by group and prority and pesses the parameter to it.
 char RunCommand(int cmdGroup)
@@ -128,8 +129,6 @@ char RunCommand(int cmdGroup)
         {
           if(cmdDB[i2].cmdRef != 0) //we check to see if there is a function we need to call for this command..
           {
-            //typedef void(__cdecl *CCMD)(); Works in windows only
-            //typedef int(*CCMD)(void * Input);  //works in both windows and linux.. this is used so we can call on the needed function
             CallCMD = (CCMD)cmdDB[i2].cmdRef; //update CallCMD to the function pointer of the function we want to call
             if(cmdDB[i2].numParams != 0)
             {
@@ -226,7 +225,7 @@ int BindParams()
       if((strlen(ArgV[i])) >= 1 && *ArgV[i] != '-')
       {
         //dynamically adjust params index table
-        paramsDB = (char**)realloc(paramsDB,((NumParams+1) * sizeof(int)));
+        paramsDB = (char**)realloc(paramsDB,((NumParams+1) * sizeof(void*)));
         if(!paramsDB) //realloc will return 0 if it could not alloc this is to test that
         {
           printf("Unable to move or allocate more memory for paramsDB\n");
@@ -307,7 +306,7 @@ char AddCommand(const char * cmdPrimary,const char * cmdSecondary,int cmdGroup,i
 
 //TODO: maybe optimize the code and maybe make it check first against the command db and not require - and -- for indevidual commands
 //might still need the - for string together commands
-//this checked to see if any commands were passed and why way the command was passed //returns 0 if failed
+//this checked to see if any commands were passed and what way the command was passed //returns 0 if failed
 char CompareCommands()
 {
   int CurrentPramPos = 0; //we have to initialize to 0

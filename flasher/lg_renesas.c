@@ -22,7 +22,7 @@ char main_pat[] =
 };
 
 //Simple Read
-char* lgren_sread(int device,char source,int pos,int size){
+char* lgren_sread(int device,char source,size_t pos,size_t size){
   mmcdata_s d;
   memset(&d,0,sizeof(mmcdata_s));
 
@@ -34,26 +34,26 @@ char* lgren_sread(int device,char source,int pos,int size){
   return(d.data);
 }
 
-int lgren_diag(int device){
-  char data[6] = {0};
-  mmcdata_s d;
-  memset(&d,0,sizeof(mmcdata_s));
-
-  d.cmdsize  =  6; //CDB6
-  d.data     = data;
-  d.datasize = 6;
-
-  d.data[0] = 0x23; //this was done by the flasher so are we
-  d.data[5] = (char)0x80;
-
-  d.cmd[0] = 0x1D;
-  d.cmd[1] = 0x01;
-  d.cmd[4] = 0x06;
-  return(drive_command(device,&d,MMC_WRITE));
-}
+//int lgren_diag(int device){
+//  char data[6] = {0};
+//  mmcdata_s d;
+//  memset(&d,0,sizeof(mmcdata_s));
+//
+//  d.cmdsize  =  6; //CDB6
+//  d.data     = data;
+//  d.datasize = 6;
+//
+//  d.data[0] = 0x23; //this was done by the flasher so are we
+//  d.data[5] = (char)0x80;
+//
+//  d.cmd[0] = 0x1D;
+//  d.cmd[1] = 0x01;
+//  d.cmd[4] = 0x06;
+//  return(drive_command(device,&d,MMC_WRITE));
+//}
 
 //read any memory location from the drive
-int lgren_read(int device,char source,mmcdata_s* d,int pos,int size){
+int lgren_read(int device,char source,mmcdata_s* d,size_t pos,size_t size){
   char* buffer = 0;
   if(!(d->data) && size){
     buffer = (char*)malloc(size);
@@ -77,7 +77,7 @@ int lgren_read(int device,char source,mmcdata_s* d,int pos,int size){
 
 //used to write to memory location on the drive
 //so far only cache is reliable to write to.
-int lgren_write(int device,char source,mmcdata_s* d,int pos,int size){
+int lgren_write(int device,char source,mmcdata_s* d,size_t pos,size_t size){
   d->cmdsize = 10; //CDB10
   d->cmd[0] = CMD_WRITE;
   d->cmd[1] = source;
@@ -197,7 +197,8 @@ unsigned short firm_chksum_calc(char* buff,size_t size,short key){
 
 //Check various things about the firmware that should stay common
 int firm_validate(char* buff, size_t size){
-  int firm_size,type;
+  size_t firm_size;
+  int type;
 
   if(strncmp(&buff[0x20],"REV LVL ",8)){
     //verbose("firm_validate: REV LVL check failed\n");
@@ -266,8 +267,10 @@ int firm_validate(char* buff, size_t size){
 
 char firm_flasher(int device,char* buff,size_t fsize){
   mmcdata_s d;
-  unsigned short chksum;
-  int loop,size,source,pos,v;
+  //unsigned short chksum;
+  size_t loop,size,pos;
+  char source;
+  int v;
 
   memset(&d,0,sizeof(mmcdata_s));
 
@@ -276,16 +279,16 @@ char firm_flasher(int device,char* buff,size_t fsize){
   //this will generate and patch the firmware with
   //the right checksum for its data DANGEROUS!!!
   //you best know the firmware is not corrupted if you do this
-  chksum = 0;
-  if(v == 8 && force_checksum){
-    chksum = firm_chksum_calc(buff,fsize,0x0000);
-    buff[0] = (chksum >> 8) & 0x000000FF;
-    buff[1] = chksum & 0x000000FF;
-  }
-  else if(v){
-    printf("firm_flasher: Firmware validation failed: %i\n",v);
-    return 0;
-  }
+  //chksum = 0;
+  //if(v == 8 && force_checksum){
+  //  chksum = firm_chksum_calc(buff,fsize,0x0000);
+  //  buff[0] = (chksum >> 8) & 0x000000FF;
+  //  buff[1] = chksum & 0x000000FF;
+  //}
+  //else if(v){
+  //  printf("firm_flasher: Firmware validation failed: %i\n",v);
+  //  return 0;
+  //}
 
   //check if drive is ready including if cdrom is in drive
   //if no cdrom is in drive the its not ready which is
@@ -329,10 +332,10 @@ char firm_flasher(int device,char* buff,size_t fsize){
     fflush(stdout);
   }
 
-  if(!lgren_diag(device)){
-    printf("firm_flasher: Failed Self diag. Possibly bad drive flash!\n");
-    return 0;
-  }
+  //if(!lgren_diag(device)){
+  //  printf("firm_flasher: Failed Self diag. Possibly bad drive flash!\n");
+  //  return 0;
+  //}
   return 1;
 }
 
@@ -341,13 +344,13 @@ char firm_verify(int device,char* buff,size_t firm_start,size_t firm_size){
   char* buff2;
   size_t fsize2;
 
+  printf("firm_verify: Verifying firmware\n");
   for(loop = 0; loop < 4;loop++){
-    printf("firm_verify: device ready retry (%i\\4)\n",loop+1);
-    __sleep(10000);
+    __sleep(1000);
     drive_ready(device);
   }
 
-  printf("firm_verify: Verifing firmware that was flashed\n");
+  
   buff2 = 0;
   fsize2 = firm_dumper(device,&buff2,LOC_MEMORY,firm_start,firm_size);
   if(!fsize2){
@@ -365,7 +368,7 @@ char firm_verify(int device,char* buff,size_t firm_start,size_t firm_size){
 
 //dump the firmware of the drive to file
 //based off GSA-T21N and tested on GMA-4082N
-size_t firm_dumper(int device,char** inbuff,int loc,int pos,size_t dsize){
+size_t firm_dumper(int device,char** inbuff,int loc,size_t pos,size_t dsize){
   size_t start_pos,stop_pos,dump_size,dumpped_size,size;
   char* buff;
   mmcdata_s d;
@@ -416,7 +419,7 @@ size_t firm_dumper(int device,char** inbuff,int loc,int pos,size_t dsize){
   return dumpped_size;
 }
 
-char firm_spliter(char* buff,int max_size,const char* outfile){
+char firm_spliter(char* buff,size_t max_size,const char* outfile){
   int firm_size,fpos,loop;
   FILE* fileh;
 
@@ -474,8 +477,8 @@ char firm_spliter(char* buff,int max_size,const char* outfile){
   return 1;
 }
 
-int firm_demangle(char* buff,char* buff2,int firm_start,int firm_stop,int firm_end){
-  int cur_pos,count2,block_start,block_size,count1;
+int firm_demangle(char* buff,char* buff2,size_t firm_start,size_t firm_stop,size_t firm_end){
+  size_t cur_pos,count2,block_start,block_size,count1;
   char* manginfo;
 
   manginfo = &buff[firm_start];
@@ -505,7 +508,7 @@ int firm_demangle(char* buff,char* buff2,int firm_start,int firm_stop,int firm_e
     }
     if(buff2)buff2[count2] = buff[cur_pos];
   }
-  return count2;
+  return (int)count2;
 }
 
 int get_firmtype(char* buff){
@@ -530,7 +533,7 @@ int get_firmtype(char* buff){
 int get_enckeypos(char* buff,int type){
   char udtag[] = "Update Data for HLDS's Drive";
   char temp[0x100];
-  int brute,count;
+  size_t brute,count;
 
   for(brute = 0x46;brute >= sizeof(udtag);brute--){
     size_t key2;
@@ -561,7 +564,7 @@ int get_enctype(char* buff){
   return 0;
 }
 
-char firm_decrypter(char* buff,int type,int key,size_t size){
+char firm_decrypter(char* buff,int type,size_t key,size_t size){
   size_t tkey = 0,tmanip = 0,count;
 
   switch(type){
@@ -597,80 +600,6 @@ char firm_decrypter(char* buff,int type,int key,size_t size){
       //verbose("firm_decrypter: Unknown Encryption type: %i\n",type);
       return 0;
   };
-  return 1;
-}
-
-//used with dump drive info
-void info_dump(int device,char loc,int mem,int size,const char* name){
-  char* dump;
-  //print what we are attempting to read
-  printf("info_dump: Reading %s\n",name);
-  dump = lgren_sread(device,loc,mem,size);
-  if(!dump)
-    printf("info_dump: Error reading %s\n",name); //print if we failed to read
-  else {printd(dump,mem,0,size);printf("\n");}
-  free(dump); //clean up memory from read
-}
-
-//print info about the drive based off the GSA-T21N drive
-//might be different for other drives
-void dump_drive_info(int device){
-  info_dump(device,LOC_DEBUG,MEM6_HOST_LOG,   0x0200,"MEM6_HOST_LOG");
-  info_dump(device,LOC_DEBUG,MEM6_DRV_TRACE1, 0x2000,"MEM6_DRV_TRACE1");
-  info_dump(device,LOC_DEBUG,MEM6_DRV_TRACE2, 0x0200,"MEM6_DRV_TRACE2");
-  info_dump(device,LOC_DEBUG,MEM6_DRIVE_LOG,  0x0400,"MEM6_DRIVE_LOG");
-  info_dump(device,LOC_DEBUG,MEM6_PROC_ERR_LOG,0x0100,"MEM6_PROC_ERR_LOG");
-
-  info_dump(device,LOC_MEMORY,MEM5_INNER_SRAM,0x8000,"MEM5_INNER_SRAM");
-  info_dump(device,LOC_MEMORY,MEM5_SRAM1,     0x8000,"MEM5_SRAM1");
-  info_dump(device,LOC_MEMORY,MEM5_SRAM2,     0x8000,"MEM5_SRAM2");
-  info_dump(device,LOC_MEMORY,MEM5_SRAM3,     0x8000,"MEM5_SRAM3");
-  info_dump(device,LOC_MEMORY,MEM5_SRAM4,     0x8000,"MEM5_SRAM4");
-  info_dump(device,LOC_MEMORY,MEM5_DSP,       0x0800,"MEM5_DSP");
-  info_dump(device,LOC_MEMORY,MEM5_LDD,       0x0128,"MEM5_LDD");
-  info_dump(device,LOC_MEMORY,MEM5_AFE,       0x00F0,"MEM5_AFE");
-  info_dump(device,LOC_MEMORY,MEM5_SERVO_REG1,0x0200,"MEM5_SERVO_REG1");
-  info_dump(device,LOC_MEMORY,MEM5_SERVO_REG2,0x0200,"MEM5_SERVO_REG2");
-  info_dump(device,LOC_MEMORY,MEM5_SERVO_RAM1,0x0200,"MEM5_SERVO_RAM1");
-  info_dump(device,LOC_MEMORY,MEM5_SERVO_RAM3,0x0200,"MEM5_SERVO_RAM2");
-  info_dump(device,LOC_MEMORY,MEM5_SERVO_RAM3,0x0200,"MEM5_SERVO_RAM3");
-  info_dump(device,LOC_MEMORY,MEM5_CRAM0,     0x0200,"MEM5_CRAM0");
-  info_dump(device,LOC_MEMORY,MEM5_CRAM1,     0x0200,"MEM5_CRAM1");
-  info_dump(device,LOC_MEMORY,MEM5_CRAM2,     0x0200,"MEM5_CRAM2");
-  info_dump(device,LOC_MEMORY,MEM5_CRAM3,     0x0200,"MEM5_CRAM3");
-  info_dump(device,LOC_MEMORY,MEM5_EEPROM,    0x0900,"MEM5_EEPROM");
-  info_dump(device,LOC_MEMORY,MEM5_DVDRAM_43, 0x0800,"MEM5_DVDRAM_43");
-  info_dump(device,LOC_MEMORY,MEM5_DVDRAM_44, 0x0800,"MEM5_DVDRAM_44");
-  info_dump(device,LOC_MEMORY,MEM5_DVDRAM_45, 0x0800,"MEM5_DVDRAM_45");
-  info_dump(device,LOC_MEMORY,MEM5_DVDRAM_46, 0x0800,"MEM5_DVDRAM_46");
-  info_dump(device,LOC_MEMORY,MEM5_DVDRAM_47, 0x0800,"MEM5_DVDRAM_47");
-}
-
-//clear out the cache of the drive
-//based off the GSA-T21N drive
-char clr_cache(int device){
-  size_t cache_size,size,count;
-  char* cache_data;
-  mmcdata_s d;
-
-  memset(&d,0,sizeof(mmcdata_s));
-
-  cache_data = lgren_sread(device,LOC_CACHE_SIZE,0,4);
-  if(!cache_data)return 0;
-
-  cache_size = swap32(((int*)cache_data)[0]);
-
-  d.data = (char*)calloc(1,SECTOR_SIZE);
-  d.datasize = SECTOR_SIZE;
-
-  size = 0;
-  for(count = 0;count < cache_size;count+=size){
-    size = ((SECTOR_SIZE + count < cache_size)?SECTOR_SIZE:SECTOR_SIZE - ((SECTOR_SIZE + count) - cache_size));
-    if(!lgren_write(device,LOC_CACHE,&d,count,size)){
-      printf("clr_cache: Failed to zero out section at 0x%0X\n",(unsigned int)count);
-      return 0;
-    }
-  }
   return 1;
 }
 

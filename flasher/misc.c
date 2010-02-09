@@ -14,8 +14,8 @@ void __sleep(int delay){
 }
 
 //Changs LSB to MSB 32bit variable
-int swap32(int toswap){
-  int swapped = 0;
+long swap32(long toswap){
+  long swapped = 0;
   swapped |= (toswap >> 24) & 0x000000FF;
   swapped |= (toswap >> 8)  & 0x0000FF00;
   swapped |= (toswap << 8)  & 0x00FF0000;
@@ -56,11 +56,11 @@ size_t find_pattern_buff(char* buff,char* pattern,size_t bsize,size_t psize){
 }
 
 int asciihex2int(char* buff){
-  int str_size = strlen(buff);
+  size_t str_size = strlen(buff);
   int value = 0;
   int ret = 0;
-  int count;
-  int count2;
+  size_t count;
+  size_t count2;
 
   if(!str_size || str_size > 8){
     return -1;
@@ -133,7 +133,7 @@ int asciihex2int(char* buff){
 //Returns file size
 size_t get_filesize(FILE* fileh){
   //TODO: Add error checking
-  size_t org_pos;
+  long org_pos;
   size_t fsize;
 
   org_pos = ftell(fileh);
@@ -182,7 +182,7 @@ size_t falloc(char* filename,char** inbuff){
 }
 
 //Compare two memory locations reanges data
-char cmp_buff(char* buff1,char* buff2,int size){
+char cmp_buff(char* buff1,char* buff2,size_t size){
   int count;
   for(count = 0; count < size;count++){
     if(buff1[count] != buff2[count]){
