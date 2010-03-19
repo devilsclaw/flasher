@@ -532,10 +532,10 @@ int get_firmtype(char* buff){
 
 int get_enckeypos(char* buff,int type){
   char udtag[] = "Update Data for HLDS's Drive";
-  char temp[0x100];
+  char temp[0x200];
   size_t brute,count;
 
-  for(brute = 0x46;brute >= sizeof(udtag);brute--){
+  for(brute = 0x100;brute >= sizeof(udtag);brute--){
     size_t key2;
     memcpy(temp,&buff[-brute],brute);
     key2 = ((temp[0] << 8) & 0x0000FF00)| (temp[1] & 0x000000FF);
@@ -597,7 +597,7 @@ char firm_decrypter(char* buff,int type,size_t key,size_t size){
       }
       break;
     default:
-      //verbose("firm_decrypter: Unknown Encryption type: %i\n",type);
+      printf("firm_decrypter: Unknown Encryption type: %i\n",type);
       return 0;
   };
   return 1;

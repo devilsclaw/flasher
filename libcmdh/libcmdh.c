@@ -238,7 +238,7 @@ int BindParams()
       }
     }
   }
-  return(NumParams); //if everything goes as planned return true
+  return(NumParams); //if everything goes as planned return number of parameters
 }
 
 //this function adds a command to the data base
