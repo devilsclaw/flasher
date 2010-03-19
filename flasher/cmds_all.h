@@ -11,6 +11,8 @@ int cmd_dumpcore(void* Input);
 int cmd_flashfirm(void* Input);
 int cmd_ripexe(void* Input);
 int cmd_drive(void* Input);
+int cmd_ldrive(void* Input);
 int cmd_verifyfirm(void* Input);
 int cmd_getdrives(void* Input);
+int cmd_lgetdrives(void* Input);
 #endif

@@ -350,7 +350,7 @@ char firm_verify(int device,char* buff,size_t firm_start,size_t firm_size){
     drive_ready(device);
   }
 
-  
+
   buff2 = 0;
   fsize2 = firm_dumper(device,&buff2,LOC_MEMORY,firm_start,firm_size);
   if(!fsize2){
@@ -597,7 +597,7 @@ char firm_decrypter(char* buff,int type,size_t key,size_t size){
       }
       break;
     default:
-      printf("firm_decrypter: Unknown Encryption type: %i\n",type);
+      //printf("firm_decrypter: Unknown Encryption type: %i\n",type);
       return 0;
   };
   return 1;

@@ -5,6 +5,7 @@
 #include "misc.h"
 #include "lg_renesas.h"
 #include <libmmc/libmmc.h>
+#include <libcmdh/libcmdh.h>
 #include "version.h"
 #include "cmds_all.h"
 
@@ -304,17 +305,28 @@ int cmd_ripexe(void* Input){
 
 int cmd_drive(void* Input)
 {
-  char** tmpInput = (char**)Input;
-  int drive_id;
+   char** tmpInput = (char**)Input;
+   int drive_id;
 
-  printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
-  drive_id = atoi(tmpInput[0]);
-  if(!drive_id)return 0;
+   printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
+   drive_id = atoi(tmpInput[0]);
+   if(!drive_id)return 0;
 
-  if(!(drive = drive_open(drive_id))){
-    return 0;
-  }
-  return 1;
+   if(!(drive = drive_open(drive_id))){
+      return 0;
+   }
+   return 1;
+}
+
+int cmd_ldrive(void* Input)
+{
+   char** tmpInput = (char**)Input;
+   printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
+
+   if(!(drive = drive_open((int)tmpInput[0]))){
+      return 0;
+   }
+   return 1;
 }
 
 int cmd_verifyfirm(void* Input){
@@ -363,5 +375,11 @@ int cmd_getdrives(void* Input){
     return 0;
   }
 
+  return 1;
+}
+
+int cmd_lgetdrives(void* Input){
+  printf("cmd_getdrives: linux does not support this feature.\n"
+         "Please use %s -d /dev/cdrom or some other dev path to your cdrom drive.\n",GetExecName());
   return 1;
 }
