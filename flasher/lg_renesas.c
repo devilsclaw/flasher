@@ -1,3 +1,19 @@
+/*This file is part of flasher.
+
+  flasher is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  flasher is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with flasher.  If not, see <http://www.gnu.org/licenses/>.
+  */
+
 #include "lg_renesas.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -420,7 +436,7 @@ size_t firm_dumper(int device,char** inbuff,int loc,size_t pos,size_t dsize){
 }
 
 char firm_spliter(char* buff,size_t max_size,const char* outfile){
-  int firm_size,fpos,loop;
+  size_t firm_size,fpos,loop;
   FILE* fileh;
 
   firm_size = 0;
@@ -537,7 +553,7 @@ int get_enckeypos(char* buff,int type){
 
   for(brute = 0x100;brute >= sizeof(udtag);brute--){
     size_t key2;
-    memcpy(temp,&buff[-brute],brute);
+    memcpy(temp,&buff[0-brute],brute);
     key2 = ((temp[0] << 8) & 0x0000FF00)| (temp[1] & 0x000000FF);
     if(!firm_decrypter(&temp[2],type,key2,brute)){
       return 0;
@@ -738,7 +754,7 @@ char firm_ripexe(char* filename){
 
   ofile = (char*)calloc(1,strlen(filename) + 5);
   strcat(ofile,filename);
-  strcat(ofile,".hex");
+  strcat(ofile,".bin");
   if(!firm_spliter(buff2,dsize,ofile)){
     printf("firm_ripexe: Failed to split firmware\n");
     free(ofile);

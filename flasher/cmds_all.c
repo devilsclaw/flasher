@@ -1,3 +1,19 @@
+/*This file is part of flasher.
+
+  flasher is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  flasher is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with flasher.  If not, see <http://www.gnu.org/licenses/>.
+  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,6 +48,7 @@ int cmd_help(void* Input)
       "  -c, --core          Dump core firmware to file eg. firm.bin\n"
       "  -l, --dumploc       Dump a specified location\n"
       "  -f, --flash         Flash a firmware to the drive eg. official.bin\n"
+      "      --checksum      [WARNING!! don't use] Forces a correct check sum for a firmware\n"
       "  -r, --rip_exe       Rip the firmware from the exe\n"
       "  -n, --nologo        Stops the program from showing its title\n");
   return 1;
@@ -360,7 +377,7 @@ int cmd_verifyfirm(void* Input){
 }
 
 int cmd_getdrives(void* Input){
-  int count = 0;
+  size_t count = 0;
   drives_s* dd;
 
   dd = drives_available();
@@ -381,5 +398,45 @@ int cmd_getdrives(void* Input){
 int cmd_lgetdrives(void* Input){
   printf("cmd_getdrives: linux does not support this feature.\n"
          "Please use %s -d /dev/cdrom or some other dev path to your cdrom drive.\n",GetExecName());
+  return 1;
+}
+
+int cmd_checksum(void* Input){
+  char** tmpInput = (char**)Input;
+  char* buff = 0;
+  size_t fsize;
+  int v;
+  unsigned short chksum;
+  FILE* fileh;
+
+  fsize = falloc(tmpInput[0],&buff);
+  //Error messages handled in falloc
+  if(!fsize)return 0;
+
+  printf("cmd_checksum: Validating firmware\n");
+  v = firm_validate(buff,fsize);
+  if(v && v != 8){
+    printf("cmd_checksum: Failed to validate firmware\n");
+    return 0;
+  }
+
+  chksum = firm_chksum_calc(buff,fsize,0x0000);
+  buff[0] = (chksum >> 8) & 0x000000FF;
+  buff[1] = chksum & 0x000000FF;
+
+  printf("cmd_checksum: Opening %s\n",tmpInput[0]);
+  fileh = fopen(tmpInput[0],"wb+");
+  if(!fileh){
+    printf("cmd_checksum: Failed to open %s",tmpInput[0]);
+    return 0;
+  }
+
+  if(fwrite(buff,1,fsize,fileh) != fsize){
+    printf("cmd_checksum: Failed to write %s\n",tmpInput[0]);
+    free(buff);
+    return 0;
+  }
+  free(buff);
+  printf("cmd_checksum: Finished\n");
   return 1;
 }

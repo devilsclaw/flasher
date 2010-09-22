@@ -24,6 +24,12 @@ add_executable (
    ${PROJECT_SOURCE_DIR}/flasher/gui_gtk_win32.c 
    ${PROJECT_SOURCE_DIR}/flasher/lg_renesas.c 
    ${PROJECT_SOURCE_DIR}/flasher/misc.c
+   ${PROJECT_SOURCE_DIR}/flasher/cmds_all.h
+   ${PROJECT_SOURCE_DIR}/flasher/cui_all.h
+   ${PROJECT_SOURCE_DIR}/flasher/gui_gtk_all.h
+   ${PROJECT_SOURCE_DIR}/flasher/lg_renesas.h
+   ${PROJECT_SOURCE_DIR}/flasher/misc.h
+
 )
 
 set_target_properties( 

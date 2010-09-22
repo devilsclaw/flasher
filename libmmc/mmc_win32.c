@@ -1,5 +1,22 @@
+/*This file is part of flasher.
+
+  flasher is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  flasher is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with flasher.  If not, see <http://www.gnu.org/licenses/>.
+  */
+
 #ifdef WIN32
 #include "libmmc/libmmc.h"
+#include "mmc_debug.h"
 #include <stdio.h>
 
 
@@ -20,6 +37,8 @@ int drive_command(int drive,mmcdata_s* d,int direction){
   memset(sptd,0,sptd_size); //clean it up so we dont have to set everything
                             //some values can stay 0
 
+  if(d->data && d->datasize)
+	memset(d->data,0,d->datasize);
   sptd->DataBuffer = d->data;             //points to the buffer where date will be received
   sptd->DataTransferLength = (ULONG)d->datasize; //let windows know the size of the buffer
   sptd->DataIn = direction;               //direction as in reading or writing date to the device
@@ -44,7 +63,10 @@ int drive_command(int drive,mmcdata_s* d,int direction){
   if(*((int*)&d->senseret)){
     ret = 0;
   }
-  //printf("SK/ASC/ASCQ\n%02X/%02X/%02X\n",d->senseret.sk,d->senseret.asc,d->senseret.ascq);
+#ifdef _DEBUG
+  printf("SK/ASC/ASCQ\n%02X/%02X/%02X\n",d->senseret.sk,d->senseret.asc,d->senseret.ascq);
+  printd(d->data,0,0,d->datasize);
+#endif
   return ret;
 }
 
