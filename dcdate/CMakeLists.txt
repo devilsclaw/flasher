@@ -1,22 +1,22 @@
-IF(APPLE)
-   #SET(GUI_TYPE MACOSX_BUNDLE)
-   INCLUDE_DIRECTORIES ( /Developer/SDKs/MacOSX10.4u.sdk )
-   FIND_LIBRARY(CORESERVICES_LIBRARY CoreServices)
-   FIND_LIBRARY(IOKIT_LIBRARY IOKit )
-   MARK_AS_ADVANCED (CORESERVICES_LIBRARY
-                     IOKIT_LIBRARY)
-   SET(EXTRA_LIBS ${CORESERVICES_LIBRARY} ${IOKIT_LIBRARY})
-   add_definitions(-DMACOSX)
-ENDIF (APPLE)
+set(PRJNAME dcdate)
+set(PRJDIR ${PROJECT_SOURCE_DIR}/${PRJNAME})
 
-add_executable (
-   dcdate
-   ${PROJECT_SOURCE_DIR}/dcdate/dcdate.c 
-)
+set(INCDIRS ${PRJNAME})
+#set(DEPS)
+set(SRCFILES dcdate.c)
+#set(INCFILES " ")
+#set(LIBS " ")
+set(LFLAGS " ")
+set(CFLAGS " ")
+
+INCLUDE(prebuild)
+#add_library(${PRJNAME} STATIC ${SRCS} ${INCS})
+add_executable(${PRJNAME} ${SRCS} ${INCS})
+#add_executable(${PRJNAME} WIN32 ${SRCS} ${INCS})
+INCLUDE(build)
 
 ADD_CUSTOM_COMMAND(
-   TARGET dcdate
+   TARGET ${PRJNAME}
    POST_BUILD
-   COMMAND dcdate ${PROJECT_BINARY_DIR}/flasher/version.h
+   COMMAND ${PROJECT_BINARY_DIR}/../build/bin/${PRJNAME}/${PRJNAME} ${PROJECT_BINARY_DIR}/flasher/version.h
 )
-

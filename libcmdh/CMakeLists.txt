@@ -1,19 +1,16 @@
-include_directories ("${PROJECT_SOURCE_DIR}/libcmdh")
+set(PRJNAME libcmdh)
+set(PRJDIR ${PROJECT_SOURCE_DIR}/${PRJNAME})
 
-add_library (
-   libcmdh STATIC
-   ${PROJECT_SOURCE_DIR}/libcmdh/libcmdh.c
-)
+set(INCDIRS ${PRJNAME})
+#set(DEPS)
+set(SRCFILES ${PRJNAME}.c)
+set(INCFILES ${PRJNAME}/${PRJNAME}.h)
+#set(LIBS " ")
+set(LFLAGS " ")
+set(CFLAGS " ")
 
-set_target_properties( 
-   libcmdh
-   PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/build/bin
-      LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/build/lib
-      ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/build/lib
-)
-
-
-if (MSVC_IDE)
-    set_target_properties (libcmdh PROPERTIES PREFIX "../")
-endif()
+INCLUDE(prebuild)
+add_library(${PRJNAME} STATIC ${SRCS} ${INCS})
+#add_executable(${PRJNAME} ${SRCS} ${INCS})
+#add_executable(${PRJNAME} WIN32 ${SRCS} ${INCS})
+INCLUDE(build)
