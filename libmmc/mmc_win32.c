@@ -37,8 +37,9 @@ int drive_command(int drive,mmcdata_s* d,int direction){
   memset(sptd,0,sptd_size); //clean it up so we dont have to set everything
                             //some values can stay 0
 
-  if(d->data && d->datasize)
-	memset(d->data,0,d->datasize);
+  if(d->data && d->datasize && direction == MMC_READ){
+	  memset(d->data,0,d->datasize);
+  }
   sptd->DataBuffer = d->data;             //points to the buffer where date will be received
   sptd->DataTransferLength = (ULONG)d->datasize; //let windows know the size of the buffer
   sptd->DataIn = direction;               //direction as in reading or writing date to the device

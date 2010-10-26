@@ -19,6 +19,12 @@
 #include <stdio.h>
 #include <libmmc/libmmc.h>
 
+#ifdef WIN32
+#define SLASH "\\"
+#else
+#define SLASH "/"
+#endif
+
 void __sleep(int delay);
 long swap32(long toswap);
 short swap16(short toswap);

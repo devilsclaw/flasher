@@ -330,7 +330,7 @@ char firm_flasher(int device,char* buff,size_t fsize){
     size = ((d.datasize + pos < fsize)?d.datasize:d.datasize - ((d.datasize + pos) - fsize));
     d.data = &buff[pos];
 
-    if(pos+size == fsize){
+    if(pos + size == fsize){
       source = LOC_MEMORY;
       d.datasize = size;
     }
@@ -684,7 +684,7 @@ char firm_ripexe(char* filename){
   if(found){
     size_t key3 = ((buff[fsize-found] << 8) & 0x0000FF00)| (buff[fsize-found+1] & 0x000000FF);
     if(!firm_decrypter(&buff[fsize-found+2],type,key3,found-2)){
-      printf("firm_ripexe: Decryption failed. Unkown type\n");
+      printf("firm_ripexe: Decryption failed. Unkown type 1\n");
       return 0;
     }
   }
@@ -698,7 +698,7 @@ char firm_ripexe(char* filename){
   firm_stop  = swap32(*(int*)(&buff[fsize-found+6]));
   firm_end = (firm_start + firm_stop) - found;
 
-  printf("Firm location 0x%08X\n",firm_start);
+  //printf("Firm location 0x%08X\n",firm_start);
 
   if(!firm_stop){
     printf("firm_ripexe: firm_stop was 0. firmware must have a size\n");
@@ -708,7 +708,7 @@ char firm_ripexe(char* filename){
   //Decrypt the mangled firmware
   key = ((buff[firm_start] << 8) & 0x0000FF00)| (buff[firm_start+1] & 0x000000FF);
   if(!firm_decrypter(&buff[firm_start+2],type,key,firm_stop)){
-    printf("firm_ripexe: Decryption failed. Unkown type\n");
+    printf("firm_ripexe: Decryption failed. Unkown type 2\n");
     return 0;
   }
 
@@ -720,7 +720,7 @@ char firm_ripexe(char* filename){
 
   buff2 = (char*)malloc(dsize);
   if(!buff2){
-    printf("firm_ripexe: Failed to allocate memory for buff2\n");
+    printf("firm_ripexe: Failed to allocate memory 1\n");
     return 0;
   }
 
@@ -744,7 +744,7 @@ char firm_ripexe(char* filename){
       tbuff2 = (char*)realloc(buff2,fpos);
       if(!tbuff2){
         free(buff);
-        printf("firm_ripexe: Failed to reallocate memory for buff2\n");
+        printf("firm_ripexe: Failed to reallocate memory 2\n");
         return 0;
       }
       else buff2 = tbuff2;

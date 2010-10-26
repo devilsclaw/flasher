@@ -168,26 +168,26 @@ size_t falloc(char* filename,char** inbuff){
 
   *inbuff = buff;
   if(!fileh){
-    //verbose("falloc: Could not open %s file\n",filename);
+    printf("falloc: Could not open %s file\n",filename);
     fclose(fileh);
     return 0;
   }
   fsize = get_filesize(fileh);
   if(!fsize){
-    //verbose("falloc: File size is 0\n");
+    printf("falloc: File size is 0\n");
     fclose(fileh);
     return 0;
   }
 
   buff = (char*)malloc(fsize);
   if(!buff){
-    //verbose("falloc: Malloc failed\n");
+    printf("falloc: Malloc failed\n");
     fclose(fileh);
     return 0;
   }
 
   if(fread(buff,1,fsize,fileh) != fsize){
-    //verbose("falloc: Could not fully read %s\n",filename);
+    printf("falloc: Could not fully read %s\n",filename);
     free(buff);
     fclose(fileh);
     return 0;
