@@ -3,7 +3,7 @@ set(PRJDIR ${PROJECT_SOURCE_DIR}/${PRJNAME})
 
 set(INCDIRS ${PRJNAME})
 #set(DEPS)
-set(SRCFILES dcdate.c)
+set(SRCFILES ${PRJNAME}.c)
 #set(INCFILES " ")
 #set(LIBS " ")
 set(LFLAGS " ")
