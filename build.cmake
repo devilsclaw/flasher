@@ -30,9 +30,9 @@ if(NOT CFLAGS)
  set(LFLAGS " ")
 endif()
 
-set_target_properties( ${PRJNAME} PROPERTIES PREFIX "../")
 
 if(MSVC_IDE)
+set_target_properties( ${PRJNAME} PROPERTIES PREFIX "../")
 set(FLAGS)
 FOREACH(flag ${CFLAGS})
  set(FLAGS "${FLAGS} ${flag}")
