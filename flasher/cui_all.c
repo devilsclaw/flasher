@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
   //Short, Long, Group, Priority, Parameters, function pointer
   AddCommand("-v","--version"     ,0,0,0,(void*)&cmd_version);
   AddCommand("-h","--help"        ,1,0,0,(void*)&cmd_help);
-#ifndef LINUX
+#if !defined(__linux__)
   AddCommand("-D","--drives"      ,2,0,0,(void*)&cmd_getdrives);
   AddCommand("-d","--drive"       ,3,0,1,(void*)&cmd_drive);
 #else

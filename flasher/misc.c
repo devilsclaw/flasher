@@ -17,7 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-//#include <unistd.h>
+#if defined(__linux__)
+#include <unistd.h>
+#endif
 #include <string.h>
 #include "misc.h"
 

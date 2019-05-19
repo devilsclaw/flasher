@@ -25,8 +25,8 @@
 #define MMC_WRITE   SCSI_IOCTL_DATA_OUT
 #define MMC_READ    SCSI_IOCTL_DATA_IN
 
-#elif LINUX
-#include <sys/types.h>
+#elif defined(__linux__)
+#include <stdio.h>
 #include <linux/cdrom.h>
 
 //CGC_DATA_UNKNOWN = 0
@@ -163,8 +163,8 @@ int drive_eject(int device);
 int drive_safe_eject(int device);
 char drive_type(int device);
 int drive_command(int drive,mmcdata_s* d,int direction);
-int drive_open(int device);
-char drive_close(int device);
-drives_s* drives_available();
+int drive_open(char *device);
+char drive_close(FILE *intdevice);
+drives_s* drives_available(void);
 
 #endif //BASE_MMC_H

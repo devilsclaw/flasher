@@ -1,3 +1,10 @@
+Note by Chris Kobayashi (20190519):
+
+This fork of "flasher" is 64-bit clean on Linux.  No attempt was made to
+validate it on either Windows or MacOS.
+
+Original README:
+
 This file is part of flasher.
 
 This project aims to create a generic cross-platform (CD/DVD)-ROM drive firmware dumping and flashing software.

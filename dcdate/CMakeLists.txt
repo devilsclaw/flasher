@@ -7,7 +7,7 @@ set(SRCFILES ${PRJNAME}.c)
 #set(INCFILES " ")
 #set(LIBS " ")
 set(LFLAGS " ")
-set(CFLAGS " ")
+set(CFLAGS "-Wall -Werror")
 
 INCLUDE(prebuild)
 #add_library(${PRJNAME} STATIC ${SRCS} ${INCS})

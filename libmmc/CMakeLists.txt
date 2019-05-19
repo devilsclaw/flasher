@@ -7,7 +7,7 @@ set(SRCFILES mmc_all.c mmc_linux.c mmc_macosx.c mmc_win32.c)
 set(INCFILES ${PRJNAME}/${PRJNAME}.h)
 #set(LIBS " ")
 set(LFLAGS " ")
-set(CFLAGS " ")
+set(CFLAGS "-Wall -Werror")
 
 INCLUDE(prebuild)
 add_library(${PRJNAME} STATIC ${SRCS} ${INCS})

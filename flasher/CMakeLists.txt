@@ -10,7 +10,7 @@ set(SRCFILES cmds_all.c cui_all.c gui_gtk_all.c gui_gtk_win32.c lg_renesas.c mis
 set(INCFILES cmds_all.h cui_all.h gui_gtk_all.h lg_renesas.h /misc.h)
 #set(LIBS "")
 set(LFLAGS /MANIFESTUAC:NO /INCREMENTAL:NO)
-set(CFLAGS " ")
+set(CFLAGS "-Wall -Werror")
 
 INCLUDE(prebuild)
 #add_library(${PRJNAME} STATIC ${SRCS} ${INCS})

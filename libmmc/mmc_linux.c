@@ -14,7 +14,7 @@
   along with flasher.  If not, see <http://www.gnu.org/licenses/>.
   */
 
-#ifdef LINUX
+#if defined(__linux__)
 #include "libmmc/libmmc.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +25,7 @@
 
 //execute the cdb mmc command for linux
 int drive_command(int drive,mmcdata_s* d,int direction){
-  int ret = 1,count;
+  int ret = 1;
   struct cdrom_generic_command cgc;
 
   memset(&cgc, 0,sizeof(struct cdrom_generic_command));
@@ -51,26 +51,26 @@ int drive_command(int drive,mmcdata_s* d,int direction){
 }
 
 //open disk drive based off the dev path ex. /dev/hda
-int drive_open(int device){
+int drive_open(char *device){
   int fd;
   //printf("open_drive: Opening Drive: %s.\n",device);
-  if((fd = open((char*)device,O_RDONLY | O_NONBLOCK)) < 0){
-    printf("open_drive: Cannot open device %s.\n",(char*)device);
+  if((fd = open(device,O_RDONLY | O_NONBLOCK)) < 0){
+    printf("open_drive: Cannot open device %s.\n",device);
     return 0;
   }
 
   //printf("open_drive: Device %s Opened.\n",device);
 
   if(drive_type(fd) != T_CDROM){
-    printf("open_drive: %s is not a CD/DVD Drive type.\n",(char*)device);
+    printf("open_drive: %s is not a CD/DVD Drive type.\n",device);
     return 0;
   }
 
   return(fd);
 }
 
-char drive_close(int device){
-  if(!fclose((FILE*)device)){
+char drive_close(FILE *device){
+  if(!fclose(device)){
     return 1;
   }
   return 0;

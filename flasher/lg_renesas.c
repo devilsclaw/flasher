@@ -287,6 +287,8 @@ char firm_flasher(int device,char* buff,size_t fsize){
   size_t loop,size,pos;
   char source;
   int v;
+  int force_checksum = 0;
+  int chksum = 0;
 
   memset(&d,0,sizeof(mmcdata_s));
 
@@ -295,16 +297,15 @@ char firm_flasher(int device,char* buff,size_t fsize){
   //this will generate and patch the firmware with
   //the right checksum for its data DANGEROUS!!!
   //you best know the firmware is not corrupted if you do this
-  //chksum = 0;
-  //if(v == 8 && force_checksum){
-  //  chksum = firm_chksum_calc(buff,fsize,0x0000);
-  //  buff[0] = (chksum >> 8) & 0x000000FF;
-  //  buff[1] = chksum & 0x000000FF;
-  //}
-  //else if(v){
-  //  printf("firm_flasher: Firmware validation failed: %i\n",v);
-  //  return 0;
-  //}
+  if(v == 8 && force_checksum){
+    chksum = firm_chksum_calc(buff,fsize,0x0000);
+    buff[0] = (chksum >> 8) & 0x000000FF;
+    buff[1] = chksum & 0x000000FF;
+  }
+  else if(v){
+    printf("firm_flasher: Firmware validation failed: %i\n",v);
+    return 0;
+  }
 
   //check if drive is ready including if cdrom is in drive
   //if no cdrom is in drive the its not ready which is
@@ -385,7 +386,8 @@ char firm_verify(int device,char* buff,size_t firm_start,size_t firm_size){
 //dump the firmware of the drive to file
 //based off GSA-T21N and tested on GMA-4082N
 size_t firm_dumper(int device,char** inbuff,int loc,size_t pos,size_t dsize){
-  size_t start_pos,stop_pos,dump_size,dumpped_size,size;
+  size_t start_pos,stop_pos,dumpped_size,size;
+  // size_t dump_size;
   char* buff;
   mmcdata_s d;
 
@@ -399,7 +401,7 @@ size_t firm_dumper(int device,char** inbuff,int loc,size_t pos,size_t dsize){
 
   start_pos = pos;
   stop_pos  = dsize + pos;
-  dump_size = dsize;
+  // dump_size = dsize;
   dumpped_size = 0;
 
   buff = (char*)calloc(1,dsize);
@@ -499,8 +501,8 @@ int firm_demangle(char* buff,char* buff2,size_t firm_start,size_t firm_stop,size
 
   manginfo = &buff[firm_start];
   cur_pos  = firm_start+0x204;
-  block_start = ((((((manginfo[4] & 0xFF) << 8) + manginfo[5] & 0xFF) << 8) + (manginfo[6] & 0xFF)) << 8) + (manginfo[7] & 0xFF);
-  block_size = ((((((manginfo[0x104] & 0xFF) << 8) + manginfo[0x105] & 0xFF) << 8) + (manginfo[0x106] & 0xFF)) << 8) + (manginfo[0x107] & 0xFF);
+  block_start = ((((((manginfo[4] & 0xFF) << 8) + (manginfo[5] & 0xFF)) << 8) + (manginfo[6] & 0xFF)) << 8) + (manginfo[7] & 0xFF);
+  block_size = ((((((manginfo[0x104] & 0xFF) << 8) + (manginfo[0x105] & 0xFF)) << 8) + (manginfo[0x106] & 0xFF)) << 8) + (manginfo[0x107] & 0xFF);
   count1 = 0;
 
   manginfo = &manginfo[5];
@@ -514,8 +516,8 @@ int firm_demangle(char* buff,char* buff2,size_t firm_start,size_t firm_stop,size
       count1++;
       manginfo += 4;
       if(count1 < 0x40){
-        block_start = ((((((manginfo[-1] & 0xFF) << 8) + manginfo[0] & 0xFF) << 8) + (manginfo[1] & 0xFF)) << 8) + (manginfo[2] & 0xFF);
-        block_size  = ((((((manginfo[0xFF] & 0xFF) << 8) + manginfo[0x100] & 0xFF) << 8) + (manginfo[0x101] & 0xFF)) << 8) + (manginfo[0x102] & 0xFF);
+        block_start = ((((((manginfo[-1] & 0xFF) << 8) + (manginfo[0] & 0xFF)) << 8) + (manginfo[1] & 0xFF)) << 8) + (manginfo[2] & 0xFF);
+        block_size  = ((((((manginfo[0xFF] & 0xFF) << 8) + (manginfo[0x100] & 0xFF)) << 8) + (manginfo[0x101] & 0xFF)) << 8) + (manginfo[0x102] & 0xFF);
       }
       else{
         block_start = 0;
