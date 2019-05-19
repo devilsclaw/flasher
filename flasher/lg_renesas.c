@@ -50,23 +50,23 @@ char* lgren_sread(int device,char source,size_t pos,size_t size){
   return(d.data);
 }
 
-//int lgren_diag(int device){
-//  char data[6] = {0};
-//  mmcdata_s d;
-//  memset(&d,0,sizeof(mmcdata_s));
-//
-//  d.cmdsize  =  6; //CDB6
-//  d.data     = data;
-//  d.datasize = 6;
-//
-//  d.data[0] = 0x23; //this was done by the flasher so are we
-//  d.data[5] = (char)0x80;
-//
-//  d.cmd[0] = 0x1D;
-//  d.cmd[1] = 0x01;
-//  d.cmd[4] = 0x06;
-//  return(drive_command(device,&d,MMC_WRITE));
-//}
+int lgren_diag(int device){
+  char data[6] = {0};
+  mmcdata_s d;
+  memset(&d,0,sizeof(mmcdata_s));
+
+  d.cmdsize  =  6; //CDB6
+  d.data     = data;
+  d.datasize = 6;
+
+  d.data[0] = 0x23; //this was done by the flasher so are we
+  d.data[5] = (char)0x80;
+
+  d.cmd[0] = 0x1D;
+  d.cmd[1] = 0x01;
+  d.cmd[4] = 0x06;
+  return(drive_command(device,&d,MMC_WRITE));
+}
 
 //read any memory location from the drive
 int lgren_read(int device,char source,mmcdata_s* d,size_t pos,size_t size){
@@ -243,36 +243,41 @@ int firm_validate(char* buff, size_t size){
   type = get_firmtype(buff);
  //MAIN
   if(type == 1){
+
+#if defined(__notyet__)
  //not valid on all firmware only newer so far
- //if(swap32(*(int*)(&buff[0x4A4])) != firm_size){
- //   verbose("firm_validate: Firmware size check 2 failed\n");
- //   return 5;
- //}
- //not valid on all firmware only newer so far
- //if(swap32(*(int*)(&buff[0x4B4])) != firm_size){
- //   verbose("firm_validate: Firmware size check 3 failed\n");
- //   return 6;
- //}
+ if(swap32(*(int*)(&buff[0x4A4])) != firm_size){
+    verbose("firm_validate: Firmware size check 2 failed\n");
+    return 5;
+ }
+ if(swap32(*(int*)(&buff[0x4B4])) != firm_size){
+    verbose("firm_validate: Firmware size check 3 failed\n");
+    return 6;
+ }
+#endif
 
     if(strncmp(&buff[0x400],&buff[size - 0x10],0x10)){
    //verbose("firm_validate: 16 byte string test failed\n");
       return 7;
     }
   }
+
  //CORE
- //else if(type == 2){
+#if defined(__notyet__)
  //not valid on all firmware only newer so far
- //   if(swap32(*(int*)(&buff[0x9A4])) != firm_size){
- //      verbose("firm_validate: Firmware size check 2 failed\n");
- //      return 6;
- //   }
+ else if(type == 2){
+    if(swap32(*(int*)(&buff[0x9A4])) != firm_size){
+       verbose("firm_validate: Firmware size check 2 failed\n");
+       return 6;
+    }
 
  //not valid on all firmware only newer so far
- //   if(swap32(*(int*)(&buff[0x9B4])) != firm_size){
- //      verbose("firm_validate: Firmware size check 2 failed\n");
- //      return 7;
- //   }
- //}
+    if(swap32(*(int*)(&buff[0x9B4])) != firm_size){
+       verbose("firm_validate: Firmware size check 2 failed\n");
+       return 7;
+    }
+ }
+#endif
 
   if(firm_chksum_calc(buff,size,swap16(*(short*)buff))){
    //verbose("firm_validate: Checksum check failed\n");
@@ -283,12 +288,11 @@ int firm_validate(char* buff, size_t size){
 
 char firm_flasher(int device,char* buff,size_t fsize){
   mmcdata_s d;
-  //unsigned short chksum;
   size_t loop,size,pos;
   char source;
   int v;
   int force_checksum = 0;
-  int chksum = 0;
+  u_int16_t chksum = 0;
 
   memset(&d,0,sizeof(mmcdata_s));
 
@@ -349,10 +353,10 @@ char firm_flasher(int device,char* buff,size_t fsize){
     fflush(stdout);
   }
 
-  //if(!lgren_diag(device)){
-  //  printf("firm_flasher: Failed Self diag. Possibly bad drive flash!\n");
-  //  return 0;
-  //}
+  if(!lgren_diag(device)){
+    printf("firm_flasher: Failed Self diag. Possibly bad drive flash!\n");
+    return 0;
+  }
   return 1;
 }
 
