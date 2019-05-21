@@ -7,20 +7,4 @@ endif()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 
-if(WIN32)
-   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif()
-
 add_subdirectory (flasher)
-add_subdirectory (libmmc)
-add_subdirectory (libcmdh)
-
-
-
-
-
-
-
-
-
-

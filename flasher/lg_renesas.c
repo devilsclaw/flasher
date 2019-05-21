@@ -15,6 +15,7 @@
 */
 
 #include "lg_renesas.h"
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -447,7 +448,7 @@ firm_verify (int device, char *buff, size_t firm_start, size_t firm_size)
   printf ("firm_verify: Verifying firmware\n");
   for (loop = 0; loop < 4; loop++)
     {
-      __sleep (1000);
+      sleep (1);
       drive_ready (device);
     }
 
@@ -461,7 +462,7 @@ firm_verify (int device, char *buff, size_t firm_start, size_t firm_size)
     }
   else
     {
-      if (!cmp_buff (&buff[0x400], buff2, fsize2))
+      if (memcmp (&buff[0x400], buff2, fsize2))
 	{
 	  printf ("firm_verify: Verification failed\n");
 	  return 0;

@@ -14,7 +14,6 @@
   along with flasher.  If not, see <http://www.gnu.org/licenses/>.
   */
 
-#ifdef CUI
 #include <stdlib.h>
 #include "cmds_all.h"
 #include <libcmdh.h>
@@ -28,13 +27,8 @@ main (int argc, char **argv)
   /* Short, Long, Group, Priority, Parameters, function pointer */
   AddCommand ("-v", "--version", 0, 0, 0, (void *) &cmd_version);
   AddCommand ("-h", "--help", 1, 0, 0, (void *) &cmd_help);
-#if !defined(__linux__)
   AddCommand ("-D", "--drives", 2, 0, 0, (void *) &cmd_getdrives);
   AddCommand ("-d", "--drive", 3, 0, 1, (void *) &cmd_drive);
-#else
-  AddCommand ("-D", "--drives", 2, 0, 0, (void *) &cmd_lgetdrives);
-  AddCommand ("-d", "--drive", 3, 0, 1, (void *) &cmd_ldrive);
-#endif
   AddCommand ("-m", "--main", 4, 0, 1, (void *) &cmd_dumpmain);
   AddCommand ("-c", "--core", 4, 1, 1, (void *) &cmd_dumpcore);
   AddCommand ("-l", "--dumploc", 4, 2, 4, (void *) &cmd_dumploc);
@@ -74,5 +68,3 @@ main (int argc, char **argv)
 
   return 0;
 }
-
-#endif /* CUI */

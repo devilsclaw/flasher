@@ -358,27 +358,6 @@ int
 cmd_drive (void *Input)
 {
   char **tmpInput = (char **) Input;
-#if defined(__linux__)
-  char *drive_id = tmpInput[0];
-#else
-  int drive_id = atoi (tmpInput[0]);
-#endif
-
-  if (!drive_id)
-    return 0;
-  printf ("cmd_drive: Opening Drive: %s.\n", tmpInput[0]);
-
-  if (!(drive = drive_open (drive_id)))
-    {
-      return 0;
-    }
-  return 1;
-}
-
-int
-cmd_ldrive (void *Input)
-{
-  char **tmpInput = (char **) Input;
   printf ("cmd_drive: Opening Drive: %s.\n", tmpInput[0]);
 
   if (!(drive = drive_open (tmpInput[0])))
@@ -422,10 +401,10 @@ cmd_verifyfirm (void *Input)
   return 1;
 }
 
-#if !defined(__linux__)
 int
 cmd_getdrives (void *Input)
 {
+#if !defined(__linux__)
   size_t count = 0;
   drives_s *dd;
 
@@ -444,17 +423,12 @@ cmd_getdrives (void *Input)
       printf ("cmd_getdrives: unable to detect any cdrom drives\n");
       return 0;
     }
-
-  return 1;
-}
-#endif
-
-int
-cmd_lgetdrives (void *Input)
-{
+#else
   printf ("cmd_getdrives: linux does not support this feature.\n"
 	  "Please use %s -d /dev/cdrom or some other dev path to your cdrom drive.\n",
 	  GetExecName ());
+#endif
+
   return 1;
 }
 
@@ -482,8 +456,8 @@ cmd_checksum (void *Input)
     }
 
   chksum = firm_chksum_calc (buff, fsize, 0x0000);
-  buff[0] = (chksum >> 8) & 0x000000FF;
-  buff[1] = chksum & 0x000000FF;
+  buff[0] = (chksum >> 8) & 0xFF;
+  buff[1] = chksum & 0xFF;
 
   printf ("cmd_checksum: Opening %s\n", tmpInput[0]);
   fileh = fopen (tmpInput[0], "wb+");
