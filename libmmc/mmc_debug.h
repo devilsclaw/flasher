@@ -16,5 +16,5 @@
 
 #ifndef MMC_DEBUG_H
 #define MMC_DEBUG_H
-void printd(char* buff,int offset,int buff_start,int buff_end);
-#endif //MMC_DEBUG_H
+void printd (char *buff, int offset, int buff_start, int buff_end);
+#endif /* MMC_DEBUG_H */

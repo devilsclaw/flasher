@@ -17,5 +17,3 @@ INCLUDE(prebuild)
 add_executable(${PRJNAME} ${SRCS} ${INCS})
 #add_executable(${PRJNAME} WIN32 ${SRCS} ${INCS})
 INCLUDE(build)
-
-add_dependencies(${PRJNAME} dcdate)

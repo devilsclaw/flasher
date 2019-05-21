@@ -17,7 +17,7 @@
 #ifndef MISC_H
 #define MISC_H
 #include <stdio.h>
-#include <libmmc/libmmc.h>
+#include <libmmc.h>
 
 #ifdef WIN32
 #define SLASH "\\"
@@ -25,13 +25,14 @@
 #define SLASH "/"
 #endif
 
-void __sleep(int delay);
-long swap32(long toswap);
-short swap16(short toswap);
-size_t find_pattern_buff(char* buff,char* pattern,size_t bsize,size_t psize);
-int asciihex2int(char* buff);
-size_t get_filesize(FILE* fileh);
-size_t falloc(char* filename,char** inbuff);
-char cmp_buff(char* buff1,char* buff2,size_t size);
-void printd(char* buff,int offset,int buff_start,int buff_end);
+void __sleep (int delay);
+u_int32_t swap32 (u_int32_t toswap);
+u_int16_t swap16 (u_int16_t toswap);
+size_t find_pattern_buff (char *buff, char *pattern, size_t bsize,
+			  size_t psize);
+unsigned int asciihex2int (char *buff);
+size_t get_filesize (FILE * fileh);
+size_t falloc (char *filename, char **inbuff);
+char cmp_buff (char *buff1, char *buff2, size_t size);
+void printd (char *buff, int offset, int buff_start, int buff_end);
 #endif
