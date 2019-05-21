@@ -20,8 +20,8 @@
 #include <ctype.h>
 #include "misc.h"
 #include "lg_renesas.h"
-#include <libmmc.h>
-#include <libcmdh.h>
+#include "libmmc.h"
+#include "libcmdh.h"
 #include "version.h"
 #include "cmds_all.h"
 

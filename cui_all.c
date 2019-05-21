@@ -16,7 +16,7 @@
 
 #include <stdlib.h>
 #include "cmds_all.h"
-#include <libcmdh.h>
+#include "libcmdh.h"
 
 int
 main (int argc, char **argv)

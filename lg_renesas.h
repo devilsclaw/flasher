@@ -16,7 +16,7 @@
 
 #ifndef LG_RENESAS_H
 #define LG_RENESAS_H
-#include <libmmc.h>
+#include "libmmc.h"
 #include <stdio.h>
 
 extern char main_pat[72];

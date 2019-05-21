@@ -17,15 +17,7 @@
 #ifndef BASE_MMC_H
 #define BASE_MMC_H
 
-#ifdef WIN32
-#include <windows.h>
-#include <ntddscsi.h>
-#include <direct.h>
-#define MMC_UNKNOWN SCSI_IOCTL_DATA_UNSPECIFIED
-#define MMC_WRITE   SCSI_IOCTL_DATA_OUT
-#define MMC_READ    SCSI_IOCTL_DATA_IN
-
-#elif defined(__linux__)
+#if defined(__linux__)
 #include <stdio.h>
 #include <linux/cdrom.h>
 
@@ -38,24 +30,7 @@
 #define MMC_READ    CGC_DATA_READ
 #define MMC_NONE    CGC_DATA_NONE
 
-#elif __APPLE__
-#include <CoreFoundation/CoreFoundation.h>
-#include <IOKit/scsi/SCSITaskLib.h>
-#include <IOKit/IOKitLib.h>
-#include <IOKit/scsi/SCSICmds_INQUIRY_Definitions.h>
-#include <IOKit/scsi/SCSICommandOperationCodes.h>
-#define MMC_UNKNOWN kSCSIDataTransfer_NoDataTransfer
-#define MMC_WRITE   kSCSIDataTransfer_FromInitiatorToTarget
-#define MMC_READ    kSCSIDataTransfer_FromTargetToInitiator
-typedef struct
-{
-  IOCFPlugInInterface **plg_in_intf;
-  SCSITaskDeviceInterface **dev_intf;
-  MMCDeviceInterface **mmc_intf;
-  io_iterator_t itt;
-} drive_data_s;
-
-#endif /* WIN32 && LINUX && __APPLE__ */
+#endif /* LINUX */
 
 typedef struct inquiry_s
 {

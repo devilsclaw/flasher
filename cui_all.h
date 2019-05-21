@@ -14,7 +14,4 @@
   along with flasher.  If not, see <http://www.gnu.org/licenses/>.
   */
 
-#ifdef CUI //Console User Interface
 #define ud_progress(perc)
-#endif //GUI & CUI
-

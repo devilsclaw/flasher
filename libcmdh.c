@@ -16,30 +16,7 @@
 
 /* TODO: Implement code that will clean up the command handle when finished with it. */
 
-#include <libcmdh.h>
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-#ifdef ISDLL
-/* standard windows dll entry point */
-BOOL APIENTRY
-DllMain (HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
-{
-  if (fdwReason == DLL_PROCESS_ATTACH)
-    {
-      return 1;
-    }
-
-  else if (fdwReason == DLL_PROCESS_DETACH)
-    {
-      return 1;
-    }
-  return 0;
-}
-#endif
-
+#include "libcmdh.h"
 
 char INDIR = 0;
 char OUTDIR = 0;
