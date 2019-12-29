@@ -99,7 +99,6 @@ falloc (char *filename, char **inbuff)
   if (!fileh)
     {
       printf ("falloc: Could not open %s file\n", filename);
-      fclose (fileh);
       return 0;
     }
 
@@ -129,5 +128,6 @@ falloc (char *filename, char **inbuff)
     }
 
   *inbuff = buff;
+  fclose(fileh);
   return fsize;
 }
