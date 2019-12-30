@@ -18,19 +18,22 @@
 #define LG_RENESAS_H
 #include <libmmc/libmmc.h>
 #include <stdio.h>
+#include <stdint.h>
 
-extern char main_pat[72];
-extern char core_pat[72];
+#define SIZEOF_FIRMINFO 72
+
+extern char main_pat[SIZEOF_FIRMINFO];
+extern char core_pat[SIZEOF_FIRMINFO];
 extern char verify_firmware;
 
 typedef struct firminfo{
-  long checksum;
-  long reserved[3];
+  uint32_t checksum;
+  uint32_t reserved[3];
   char devname[16];
   char revlvl[16];
   char romrev[16];
-  long firm_start;
-  long firm_size;
+  uint32_t firm_start;
+  uint32_t firm_size;
 }firminfo;
 
 enum loc_e{
