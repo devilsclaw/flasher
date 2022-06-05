@@ -320,21 +320,6 @@ int cmd_ripexe(void* Input){
   return 1;
 }
 
-int cmd_drive(void* Input)
-{
-   char** tmpInput = (char**)Input;
-   int drive_id;
-
-   printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
-   drive_id = atoi(tmpInput[0]);
-   if(!drive_id)return 0;
-
-   if(!(drive = drive_open(drive_id))){
-      return 0;
-   }
-   return 1;
-}
-
 int cmd_ldrive(void* Input)
 {
    char** tmpInput = (char**)Input;

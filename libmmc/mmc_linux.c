@@ -69,13 +69,6 @@ int drive_open(int device){
   return(fd);
 }
 
-char drive_close(int device){
-  if(!fclose((FILE*)device)){
-    return 1;
-  }
-  return 0;
-}
-
 drives_s* drives_available(){
   return 0;
 }
