@@ -369,7 +369,7 @@ int cmd_getdrives(void* Input){
   if(dd){
     printf("\nAVAILABLE DRIVES AND IDs:\n");
     for(count = 0;count < dd->number;++count){
-       printf("Drive ID: %i Name: %s\n",dd->drives[count].id,dd->drives[count].name);
+       printf("Drive ID: %zu Name: %s\n",dd->drives[count].id,dd->drives[count].name);
     }
   }
   else{
