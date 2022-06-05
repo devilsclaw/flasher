@@ -322,10 +322,10 @@ int cmd_ripexe(void* Input){
 
 int cmd_ldrive(void* Input)
 {
-   char** tmpInput = (char**)Input;
+   const char** tmpInput = Input;
    printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
 
-   if(!(drive = drive_open((int)tmpInput[0]))){
+   if(!(drive = drive_open(tmpInput[0]))){
       return 0;
    }
    return 1;
