@@ -17,9 +17,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-//#include <unistd.h>
 #include <string.h>
 #include "misc.h"
+
+#ifndef WIN32
+#include <unistd.h>
+#endif
 
 void __sleep(int delay){
 #ifdef WIN32
