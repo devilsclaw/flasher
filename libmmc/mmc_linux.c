@@ -51,29 +51,22 @@ int drive_command(int drive,mmcdata_s* d,int direction){
 }
 
 //open disk drive based off the dev path ex. /dev/hda
-int drive_open(int device){
+int drive_open(const char* device){
   int fd;
   //printf("open_drive: Opening Drive: %s.\n",device);
-  if((fd = open((char*)device,O_RDONLY | O_NONBLOCK)) < 0){
-    printf("open_drive: Cannot open device %s.\n",(char*)device);
+  if((fd = open(device,O_RDONLY | O_NONBLOCK)) < 0){
+    printf("open_drive: Cannot open device %s.\n",device);
     return 0;
   }
 
   //printf("open_drive: Device %s Opened.\n",device);
 
   if(drive_type(fd) != T_CDROM){
-    printf("open_drive: %s is not a CD/DVD Drive type.\n",(char*)device);
+    printf("open_drive: %s is not a CD/DVD Drive type.\n",device);
     return 0;
   }
 
   return(fd);
-}
-
-char drive_close(int device){
-  if(!fclose((FILE*)device)){
-    return 1;
-  }
-  return 0;
 }
 
 drives_s* drives_available(){

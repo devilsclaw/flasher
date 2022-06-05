@@ -320,27 +320,12 @@ int cmd_ripexe(void* Input){
   return 1;
 }
 
-int cmd_drive(void* Input)
-{
-   char** tmpInput = (char**)Input;
-   int drive_id;
-
-   printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
-   drive_id = atoi(tmpInput[0]);
-   if(!drive_id)return 0;
-
-   if(!(drive = drive_open(drive_id))){
-      return 0;
-   }
-   return 1;
-}
-
 int cmd_ldrive(void* Input)
 {
-   char** tmpInput = (char**)Input;
+   const char** tmpInput = Input;
    printf("cmd_drive: Opening Drive: %s.\n",tmpInput[0]);
 
-   if(!(drive = drive_open((int)tmpInput[0]))){
+   if(!(drive = drive_open(tmpInput[0]))){
       return 0;
    }
    return 1;
@@ -384,7 +369,7 @@ int cmd_getdrives(void* Input){
   if(dd){
     printf("\nAVAILABLE DRIVES AND IDs:\n");
     for(count = 0;count < dd->number;++count){
-       printf("Drive ID: %i Name: %s\n",dd->drives[count].id,dd->drives[count].name);
+       printf("Drive ID: %zu Name: %s\n",dd->drives[count].id,dd->drives[count].name);
     }
   }
   else{

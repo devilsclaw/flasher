@@ -163,8 +163,7 @@ int drive_eject(int device);
 int drive_safe_eject(int device);
 char drive_type(int device);
 int drive_command(int drive,mmcdata_s* d,int direction);
-int drive_open(int device);
-char drive_close(int device);
+int drive_open(const char* device);
 drives_s* drives_available();
 
 #endif //BASE_MMC_H
